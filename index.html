@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brons: Top 6 Hit Songs</title>
+    <style>
+        * {
+            font-family: sans-serif, Arial;
+        }
+
+        body {
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .content {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            background-color: gray;
+            min-height: 18rem;
+            width: 48%;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        .content span {
+            font-size: 38px;
+            font-weight: 600;
+        }
+
+        [draggable] {
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            cursor: move;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="content">
+            <span>Top 6 Hit Songs</span>
+            <ol id="songList" aria-label="Top 6 Hit Songs">
+            </ol>
+            <button id="addSong">Add a Song</button>
+        </div>
+    </main>
+
+    <script>
+        class SongList {
+            constructor(element) {
+                this.element = element;
+                this.songs = ["Bohemian Rhapsody", "Stairway to Heaven", "Hotel California", "Imagine", "Smells Like Teen Spirit", "Hey Jude"]; // 1. Maak een array aan met 6 songtitels
+                this.render();
+            }
+
+            render() {
+                this.element.innerHTML = '';
+                this.songs.forEach((song, index) => {
+                    let li = document.createElement('li');
+                    li.textContent = song;
+                    li.setAttribute('draggable', true);
+                    li.setAttribute('data-index', index);
+                    li.addEventListener('dragstart', this.dragStart.bind(this));
+                    li.addEventListener('dragover', this.dragOver.bind(this));
+                    li.addEventListener('drop', this.drop.bind(this));
+                    this.element.appendChild(li);
+                });
+
+                // 2. Laat de eerste songtitel op het scherm zien
+                let firstSong = document.createElement('p');
+                firstSong.textContent = "Eerste songtitel: " + this.songs[0];
+                this.element.appendChild(firstSong);
+
+                // 3. Laat de derde songtitel uit de lijst zien
+                let thirdSong = document.createElement('p');
+                thirdSong.textContent = "Derde songtitel: " + this.songs[2];
+                this.element.appendChild(thirdSong);
+            }
+
+            addSong(song) {
+                this.songs.push(song);
+                this.render();
+            }
+
+            dragStart(e) {
+                e.dataTransfer.setData('text/plain', e.target.getAttribute('data-index'));
+            }
+
+            dragOver(e) {
+                e.preventDefault();
+            }
+
+            drop(e) {
+                e.preventDefault();
+                let old_index = e.dataTransfer.getData('text/plain');
+                let new_index = e.target.getAttribute('data-index');
+                this.swapSongs(old_index, new_index);
+            }
+
+            swapSongs(old_index, new_index) {
+                let temp = this.songs[old_index];
+                this.songs[old_index] = this.songs[new_index];
+                this.songs[new_index] = temp;
+                this.render();
+            }
+        }
+
+        const songList = new SongList(document.getElementById('songList'));
+
+        document.getElementById('addSong').addEventListener('click', () => {
+            const newSong = prompt("Enter the new song title:");
+            if (newSong) {
+                songList.addSong(newSong);
+            }
+        });
+
+        // 4. De DJ wil alle nummers in de lijst zien. Gebruik een foreach-loop om alle nummers uit de lijst te tonen.
+        let allSongs = document.createElement('p');
+        allSongs.textContent = "Alle nummers in de lijst:";
+        songList.songs.forEach((song, index) => {
+            allSongs.textContent += "\n" + (index + 1) + ". " + song;
+        });
+        document.body.appendChild(allSongs);
+    </script>
+</body>
+
+</html>
