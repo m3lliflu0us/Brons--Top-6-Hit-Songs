@@ -27,3 +27,7 @@ De JavaScript-code bevat een klasse genaamd `SongList`. Een instantie van deze k
 Wanneer de "Add a Song" knop wordt geklikt, wordt de `addSong` methode aangeroepen om een nieuw liedje toe te voegen aan de lijst.
 
 Tot slot wordt er een lijst van alle liedjes op de webpagina weergegeven.
+
+#### Auteurs
+
+- Bryce van der Werf
